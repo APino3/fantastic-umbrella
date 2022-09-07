@@ -1,16 +1,28 @@
 const router = require('express').Router();
+const { response, request } = require('express');
 const { Product, Category, Tag, ProductTag } = require('../../models');
-
+const {Op} = require("sequelize"); 
 // The `/api/products` endpoint
 
 // get all products
 router.get('/', (req, res) => {
+
+Product.findAll().then( data => {
+  res.json(data); 
+})
   // find all products
   // be sure to include its associated Category and Tag data
 });
 
 // get one product
 router.get('/:id', (req, res) => {
+  Product.findAll({ where:  
+          {
+            product_id: {[Op.eq] : +req.params.id }
+          }})
+    .then( data => {
+        res.json(data); 
+  });
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
 });
@@ -52,7 +64,7 @@ router.put('/:id', (req, res) => {
   // update product data
   Product.update(req.body, {
     where: {
-      id: req.params.id,
+      product_id: req.params.id,
     },
   })
     .then((product) => {
@@ -91,6 +103,13 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  Product.destroy({ where:  
+    {
+      product_id: {[Op.eq] : +req.params.id }
+    }})
+.then( data => {
+  res.json(data); 
+  });
 });
 
 module.exports = router;
